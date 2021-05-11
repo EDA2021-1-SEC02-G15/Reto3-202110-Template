@@ -36,16 +36,11 @@ operación solicitada
 
 def printMenu():
     print("Bienvenido")
-    print("1- Cargar información en el catálogo")
-    print("2- Caracterizar las reproducciones")
-    print("3- Encontrar música para festejar")
+    print("1- Inicializar Analizador")
+    print("2- Cargar datos")
+    print("3- Req 3")
 
-def initAnalyzer():
-
-    return controller.initAnalyzer()
-
-def loadData(analyzer):
-    return controller.loadData(analyzer)
+catalog = None
 
 """
 Menu principal
@@ -54,51 +49,23 @@ while True:
     printMenu()
     inputs = input('Seleccione una opción para continuar\n')
     if int(inputs[0]) == 1:
-        print("Cargando información de los archivos ....")
-        analyzer = initAnalyzer()
+        print("Inicializando Analizador ....")
+        cont=controller.init()
+
 
     elif int(inputs[0]) == 2:
-        carac = input('Diga la característica que busca: ')
-        val_min= float(input('Diga el valor mínimo que debe tener la característica: '))
-        val_max= float(input('Diga el valor máximo que debe tener la característica: '))
+        print("Cargando Datos ....")
+        controller.loadData(cont)
+        print(controller.songSize(cont))
+        print(controller.indexHeight(cont))
+    elif int(inputs[0])==3:
+        minIns=float(input("Ingrese el valor minimo de instrumentalidad: "))
+        maxIns=float(input("Ingrese el valor maximo de instrumentalidad: "))
+        minTemp=float(input("Ingrese el valor minimo del tempo: "))
+        maxTemp=float(input("Ingrese el valor maximo del tempo: "))
+        result=controller.instrumentalTempo(cont["values"],minIns,maxIns,minTemp,maxTemp)
+        print(result[1])
 
-        rta = controller.requerimiento1(analyzer, carac, val_min, val_max)
-
-        print(carac, " está entre ", val_min, " y ", val_max)
-        print("Total de reproducciones: ", rta[1], " Total de artistas únicos: ", rta[0])
-
-    elif int(inputs[0]) == 3:
-        min_e = float(input("Diga el valor mínimo de energy."))
-        max_e = float(input("Diga el valor máximo de energy."))
-        min_d = float(input("Diga el valor mínimo de danceability."))
-        max_d = float(input("Diga el valor máximo de danceability."))
-
-        rta = controller.requerimiento2(analyzer, min_e,max_e, min_d, max_d)
-        total_tracks = rta[1]
-        tracks = rta[0]
-        track1 = tracks[0][0]
-        track2 = tracks[1][0]
-        track3 = tracks[2][0]
-        track4 = tracks[3][0]
-        track5 = tracks[4][0]
-
-        energy1 = tracks[0][1]
-        energy2 = tracks[1][1]
-        energy3 = tracks[2][1]
-        energy4 = tracks[3][1]
-        energy5 = tracks[4][1]
-
-        
-
-        print("Energy está entre ", min_e, " y ", max_e)
-        print("Danceability está entre ", min_d, " y ", max_d)
-        print("Total unique tracks in events: ", total_tracks)
-        print("-------------------- Unique track id --------------------")
-        print("Track 1: ", track1, " con energy: ", energy1[0] ," y danceability: ", energy1[1] )
-        print("Track 2: ", track2, " con energy: ", energy2[0] ," y danceability: ", energy2[1] )
-        print("Track 3: ", track3, " con energy: ", energy3[0] ," y danceability: ", energy3[1] )
-        print("Track 4: ", track4, " con energy: ", energy4[0] ," y danceability: ", energy4[1] )
-        print("Track 5: ", track5, " con energy: ", energy5[0] ," y danceability: ", energy5[1] )
 
     else:
         sys.exit(0)

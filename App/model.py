@@ -39,127 +39,86 @@ los mismos.
 """
 
 # Construccion de modelos
+
 def newAnalyzer():
 
-    analyzer = {'id_canciones': None,
-                'autores': None,
-                'map_id': None,
-                'caracteristicas': None
+    analyzer = {'canciones': None,
+                'values': None
                 }
 
-    analyzer['id_canciones'] = lt.newList('SINGLE_LINKED', compareElements)
-    analyzer['autores'] = lt.newList('SINGLE_LINKED', compareElements)
-    analyzer['map_id'] = mp.newMap(numelements= 10000, prime= 109345121, maptype= 'CHAINING', loadfactor= 0.5, comparefunction= compareIds)
-    analyzer['caracterisiticas'] = mp.newMap(numelements= 10000, prime= 109345121, maptype= 'CHAINING', loadfactor= 0.5, comparefunction= compareElements)
-    
+    analyzer['canciones'] = lt.newList('SINGLE_LINKED', compareIds)
+    analyzer['values'] = om.newMap(omaptype='RBT',
+                                      )
     return analyzer
-
 # Funciones para agregar informacion al catalogo
 
-def addCanciones(analyzer, cancion, autor):
+def addSong(analyzer,song):
+    lt.addLast(analyzer["canciones"], song)
+    updateValues(analyzer["values"],song)
+    return analyzer
 
-    if cancion['track_id'] not in analyzer['id_canciones']:
+def updateValues(map,song):
+    valor=float(song["instrumentalness"])
+    entry=om.get(map,valor)
+    if entry is None:
+        data=newDataEntry(song)
+        om.put(map,valor,data)
+    else:
+        data=me.getValue(entry)
+    addValue(data,song)
 
-        if cancion['autor'] not in analyzer['autores']:
+def newDataEntry(song):
+    entry=lt.newList("ARRAY_LIST")
+    return entry
 
-            lt.addLast(analyzer['id_canciones'], cancion)
-            lt.addLast(analyzer['autores'], autor)
+def addValue(data,song):
+    lt.addLast(data,song)
+    
 
-            mp.put(analyzer['map_id'], cancion['track_id'], (analyzer['caracteristicas'], cancion['autor']))
 
+    
 
-def addCaracterisitica(analyzer, caracteristica):
-
-    value = newCaracteristica(caracteristica[' name'], caracteristica['valor'])
-    mp.put(analyzer['caracteristicas'], value['name'],value['valor'] )
+    
 
 
 
 # Funciones para creacion de datos
-def newCaracteristica(caracteristica, valor):
-    caracteristica={'name' : ' ','valor' : 0 }
-    caracteristica['name'] = caracteristica
-    caracteristica['valor'] = valor
-
-    return caracteristica
-
 
 # Funciones de consulta
-def requerimiento1 (analyzer, caracteristica, valor_min, valor_max):
 
-    table = analyzer['map_id']
-    n = mp.size(analyzer['map_id'])
-    count_aut = 0
-    count_canc = 0
-    i=0
-    while i < n:
+def songSize(analyzer):
+    return lt.size(analyzer["canciones"])
 
-        carac = me.getValue(table,i)[0]
-        author = me.getValue(table,i)[1]
-        authors = lt.newList()
-        value = me.getValue(carac, caracteristica)
+def indexHeight(analyzer):
+    return om.height(analyzer["values"])
 
-        if valor_min <= value <= valor_max:
-            count_canc +=1
+def indexSize(analyzer):
+    return om.size(analyzer["values"])
 
-            if author not in authors:
-                count_aut +=1
-                lt.addLast(authors, author) 
-    
-    return count_aut, count_canc
-
-def requerimiento2 (analyzer, min_energy, max_energy, min_danceability, max_danceability):
-
-    table = analyzer['map_id']
-    n= mp.size(table)
-    track_id = mp.keySet(table)
-    tracks = mp.newMap(numelements=n,prime= 109345121, maptype= 'CHAINING', loadfactor= 0.5, comparefunction= compareElements) 
-    i=0
-    track_count = 0
-
-    while i < n:
-
-        carac = me.getValue(table,i)[0]
-        v_energy = me.getValue(carac, 'energy')
-        v_dance = me.getValue(carac, 'danceability')
-
-        if min_energy <= v_energy <= max_energy and min_danceability <= v_dance <= max_danceability:
-            
-            if track_id not in mp.keySet(tracks):
-                val = lt.newList()
-                lt.addLast(val, v_energy)
-                lt.addLast(val, v_dance)
-                mp.put(tracks,track_id, val)
-
-                track_count +=1
-        
-        i+=1
-        rta = random(tracks)
-
-    return rta, track_count
-
-def random(table):
-
-    n = mp.size(table)
-    numero = randint(0, n-1)
-    i= 0
-    rta = lt.newList()
-
-    while i < 5:
-
-        pareja = mp.get(table, numero[i])
-        lt.addLast(rta, pareja)
-        i+=1
-
-    return rta
 
 
 # Funciones utilizadas para comparar elementos dentro de una lista
 
+def instrumentalTempo(map,minIns,maxIns,minTemp:float,maxTemp:float):
+    lista=om.values(map,minIns,maxIns)
+    semi=lt.size(lista)
+    final_list=lt.newList("ARRAY_LIST")
+    for i in range(semi+1):
+        songlist=lt.getElement(lista,i)
+        for j in range(lt.size(songlist)+1):
+            song=lt.getElement(songlist,j)
+            if float(song["tempo"])>=minTemp and float(song["tempo"])<=maxTemp:
+                lt.addLast(final_list,song)
+    final=lt.size(final_list)
+    return (final_list,final)
+
+
 # Funciones de ordenamiento
 
 def compareIds(id1, id2):
-
+    """
+    Compara dos crimenes
+    """
     if (id1 == id2):
         return 0
     elif id1 > id2:
@@ -169,7 +128,9 @@ def compareIds(id1, id2):
 
 
 def compareElements(ele1, ele2):
-
+    """
+    Compara dos fechas
+    """
     if (ele1 == ele2):
         return 0
     elif (ele1 > ele2):

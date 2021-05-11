@@ -24,40 +24,37 @@ import config as cf
 import model
 import csv
 
-
 """
 El controlador se encarga de mediar entre la vista y el modelo.
 """
 
 # Inicialización del Catálogo de libros
-def initAnalyzer():
-    return model.newAnalyzer
+def init():
+    analyzer = model.newAnalyzer()
+    return analyzer
 
 # Funciones para la carga de datos
 def loadData(analyzer):
-    loadTracks(analyzer)
-    loadCaracterisiticas(analyzer)
-
-def loadTracks(analyzer):
-    tracks_file = cf.data_dir + "context_content_features-small.csv"
-    input_file = csv.DictReader(open(tracks_file, encoding='utf-8'),delimiter='\t')
-    for categoria in input_file:
-        model.addCanciones(analyzer,categoria)
-
-def loadCaracterisiticas(analyzer):
-    caracteristics_file = cf.data_dir + "context_content_features-small.csv"
-    input_file = csv.DictReader(open( caracteristics_file, encoding='utf-8'),delimiter='\t')
-    for categoria in input_file:
-        model.addCaracterisitica(analyzer,categoria)
+    songfile="context_content_features-small.csv"
+    songfile = cf.data_dir + songfile
+    input_file = csv.DictReader(open(songfile, encoding="utf-8"),
+                                delimiter=",")
+    for song in input_file:
+        model.addSong(analyzer, song)
+    return analyzer
 
 # Funciones de ordenamiento
 
 # Funciones de consulta sobre el catálogo
 
-def requerimiento1(analyzer, caracteristica, valor_min, valor_max):
+def songSize(analyzer):
+    return model.songSize(analyzer)
 
-    return model.requerimiento1(analyzer, caracteristica, valor_min, valor_max)
+def indexHeight(analyzer):
+    return model.indexHeight(analyzer)
 
-def requerimiento2(analyzer, min_energy, max_energy, min_danceability, max_danceability):
+def indexSize(analyzer):
+    return model.indexSize(analyzer)
 
-    return model.requerimiento2(analyzer, min_energy, max_energy, min_danceability, max_danceability)
+def instrumentalTempo(map,minIns,maxIns,minTemp,maxTemp):
+    return model.instrumentalTempo(map,minIns,maxIns,minTemp,maxTemp)
