@@ -100,6 +100,15 @@ while True:
         print("Track 4: ", track4, " con energy: ", energy4[0] ," y danceability: ", energy4[1] )
         print("Track 5: ", track5, " con energy: ", energy5[0] ," y danceability: ", energy5[1] )
 
+    elif int(inputs[0])==5:
+        
+        minIns=float(input("Ingrese el valor minimo de instrumentalidad: "))
+        maxIns=float(input("Ingrese el valor maximo de instrumentalidad: "))
+        minTemp=float(input("Ingrese el valor minimo del tempo: "))
+        maxTemp=float(input("Ingrese el valor maximo del tempo: "))
+        result=controller.instrumentalTempo(cont["values"],minIns,maxIns,minTemp,maxTemp)
+        print(result[1])
+
     else:
         sys.exit(0)
 sys.exit(0)
