@@ -30,34 +30,34 @@ El controlador se encarga de mediar entre la vista y el modelo.
 """
 
 # Inicialización del Catálogo de libros
-def initAnalyzer():
-    return model.newAnalyzer
+def initCatalog():
+    return model.newCatalog
 
 # Funciones para la carga de datos
-def loadData(analyzer):
-    loadTracks(analyzer)
-    loadCaracterisiticas(analyzer)
+def loadData(Catalog):
+    loadTracks(Catalog)
+    loadCaracterisiticas(Catalog)
 
-def loadTracks(analyzer):
+def loadTracks(Catalog):
     tracks_file = cf.data_dir + "context_content_features-small.csv"
     input_file = csv.DictReader(open(tracks_file, encoding='utf-8'),delimiter='\t')
     for categoria in input_file:
-        model.addCanciones(analyzer,categoria)
+        model.addCanciones(Catalog,categoria)
 
-def loadCaracterisiticas(analyzer):
+def loadCaracterisiticas(Catalog):
     caracteristics_file = cf.data_dir + "context_content_features-small.csv"
     input_file = csv.DictReader(open( caracteristics_file, encoding='utf-8'),delimiter='\t')
     for categoria in input_file:
-        model.addCaracterisitica(analyzer,categoria)
+        model.addCaracterisitica(Catalog,categoria)
 
 # Funciones de ordenamiento
 
 # Funciones de consulta sobre el catálogo
 
-def requerimiento1(analyzer, caracteristica, valor_min, valor_max):
+def requerimiento1(Catalog, caracteristica, valor_min, valor_max):
 
-    return model.requerimiento1(analyzer, caracteristica, valor_min, valor_max)
+    return model.requerimiento1(Catalog, caracteristica, valor_min, valor_max)
 
-def requerimiento2(analyzer, min_energy, max_energy, min_danceability, max_danceability):
+def requerimiento2(Catalog, min_energy, max_energy, min_danceability, max_danceability):
 
-    return model.requerimiento2(analyzer, min_energy, max_energy, min_danceability, max_danceability)
+    return model.requerimiento2(Catalog, min_energy, max_energy, min_danceability, max_danceability)

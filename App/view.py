@@ -40,12 +40,12 @@ def printMenu():
     print("2- Caracterizar las reproducciones")
     print("3- Encontrar música para festejar")
 
-def initAnalyzer():
+def initcatalog():
 
-    return controller.initAnalyzer()
+    return controller.initcatalog()
 
-def loadData(analyzer):
-    return controller.loadData(analyzer)
+def loadData(catalog):
+    return controller.loadData(catalog)
 
 """
 Menu principal
@@ -55,14 +55,14 @@ while True:
     inputs = input('Seleccione una opción para continuar\n')
     if int(inputs[0]) == 1:
         print("Cargando información de los archivos ....")
-        analyzer = initAnalyzer()
+        catalog = initcatalog()
 
     elif int(inputs[0]) == 2:
         carac = input('Diga la característica que busca: ')
         val_min= float(input('Diga el valor mínimo que debe tener la característica: '))
         val_max= float(input('Diga el valor máximo que debe tener la característica: '))
 
-        rta = controller.requerimiento1(analyzer, carac, val_min, val_max)
+        rta = controller.requerimiento1(catalog, carac, val_min, val_max)
 
         print(carac, " está entre ", val_min, " y ", val_max)
         print("Total de reproducciones: ", rta[1], " Total de artistas únicos: ", rta[0])
@@ -73,7 +73,7 @@ while True:
         min_d = float(input("Diga el valor mínimo de danceability."))
         max_d = float(input("Diga el valor máximo de danceability."))
 
-        rta = controller.requerimiento2(analyzer, min_e,max_e, min_d, max_d)
+        rta = controller.requerimiento2(catalog, min_e,max_e, min_d, max_d)
         total_tracks = rta[1]
         tracks = rta[0]
         track1 = tracks[0][0]

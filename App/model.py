@@ -39,39 +39,39 @@ los mismos.
 """
 
 # Construccion de modelos
-def newAnalyzer():
+def newCatalog():
 
-    analyzer = {'id_canciones': None,
+    Catalog = {'id_canciones': None,
                 'autores': None,
                 'map_id': None,
                 'caracteristicas': None
                 }
 
-    analyzer['id_canciones'] = lt.newList('SINGLE_LINKED', compareElements)
-    analyzer['autores'] = lt.newList('SINGLE_LINKED', compareElements)
-    analyzer['map_id'] = mp.newMap(numelements= 10000, prime= 109345121, maptype= 'CHAINING', loadfactor= 0.5, comparefunction= compareIds)
-    analyzer['caracterisiticas'] = mp.newMap(numelements= 10000, prime= 109345121, maptype= 'CHAINING', loadfactor= 0.5, comparefunction= compareElements)
+    Catalog['id_canciones'] = lt.newList('SINGLE_LINKED', compareElements)
+    Catalog['autores'] = lt.newList('SINGLE_LINKED', compareElements)
+    Catalog['map_id'] = mp.newMap(numelements= 10000, prime= 109345121, maptype= 'CHAINING', loadfactor= 0.5, comparefunction= compareIds)
+    Catalog['caracterisiticas'] = mp.newMap(numelements= 10000, prime= 109345121, maptype= 'CHAINING', loadfactor= 0.5, comparefunction= compareElements)
     
-    return analyzer
+    return Catalog
 
 # Funciones para agregar informacion al catalogo
 
-def addCanciones(analyzer, cancion, autor):
+def addCanciones(Catalog, cancion, autor):
 
-    if cancion['track_id'] not in analyzer['id_canciones']:
+    if cancion['track_id'] not in Catalog['id_canciones']:
 
-        if cancion['autor'] not in analyzer['autores']:
+        if cancion['autor'] not in Catalog['autores']:
 
-            lt.addLast(analyzer['id_canciones'], cancion)
-            lt.addLast(analyzer['autores'], autor)
+            lt.addLast(Catalog['id_canciones'], cancion)
+            lt.addLast(Catalog['autores'], autor)
 
-            mp.put(analyzer['map_id'], cancion['track_id'], (analyzer['caracteristicas'], cancion['autor']))
+            mp.put(Catalog['map_id'], cancion['track_id'], (Catalog['caracteristicas'], cancion['autor']))
 
 
-def addCaracterisitica(analyzer, caracteristica):
+def addCaracterisitica(Catalog, caracteristica):
 
     value = newCaracteristica(caracteristica[' name'], caracteristica['valor'])
-    mp.put(analyzer['caracteristicas'], value['name'],value['valor'] )
+    mp.put(Catalog['caracteristicas'], value['name'],value['valor'] )
 
 
 
@@ -85,10 +85,10 @@ def newCaracteristica(caracteristica, valor):
 
 
 # Funciones de consulta
-def requerimiento1 (analyzer, caracteristica, valor_min, valor_max):
+def requerimiento1 (Catalog, caracteristica, valor_min, valor_max):
 
-    table = analyzer['map_id']
-    n = mp.size(analyzer['map_id'])
+    table = Catalog['map_id']
+    n = mp.size(Catalog['map_id'])
     count_aut = 0
     count_canc = 0
     i=0
@@ -108,9 +108,9 @@ def requerimiento1 (analyzer, caracteristica, valor_min, valor_max):
     
     return count_aut, count_canc
 
-def requerimiento2 (analyzer, min_energy, max_energy, min_danceability, max_danceability):
+def requerimiento2 (Catalog, min_energy, max_energy, min_danceability, max_danceability):
 
-    table = analyzer['map_id']
+    table = Catalog['map_id']
     n= mp.size(table)
     track_id = mp.keySet(table)
     tracks = mp.newMap(numelements=n,prime= 109345121, maptype= 'CHAINING', loadfactor= 0.5, comparefunction= compareElements) 
