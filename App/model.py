@@ -73,16 +73,49 @@ def addCaracterisitica(Catalog, caracteristica):
     value = newCaracteristica(caracteristica[' name'], caracteristica['valor'])
     mp.put(Catalog['caracteristicas'], value['name'],value['valor'] )
 
+def newAnalyzer():
+
+    analyzer = {'canciones': None,
+                'values': None
+                }
+
+    analyzer['canciones'] = lt.newList('SINGLE_LINKED', compareIds)
+    analyzer['values'] = om.newMap(omaptype='RBT',
+                                      )
+    return analyzer
+# Funciones para agregar informacion al catalogo
+
+def addSong(analyzer,song):
+    lt.addLast(analyzer["canciones"], song)
+    updateValues(analyzer["values"],song)
+    return analyzer
+
+def updateValues(map,song):
+    valor=float(song["instrumentalness"])
+    entry=om.get(map,valor)
+    if entry is None:
+        data=newDataEntry(song)
+        om.put(map,valor,data)
+    else:
+        data=me.getValue(entry)
+    addValue(data,song)
+
+def newDataEntry(song):
+    entry=lt.newList("ARRAY_LIST")
+    return entry
+
+def addValue(data,song):
+    lt.addLast(data,song)
+    
+
+
+    
+
+    
+
 
 
 # Funciones para creacion de datos
-def newCaracteristica(caracteristica, valor):
-    caracteristica={'name' : ' ','valor' : 0 }
-    caracteristica['name'] = caracteristica
-    caracteristica['valor'] = valor
-
-    return caracteristica
-
 
 # Funciones de consulta
 def requerimiento1 (Catalog, caracteristica, valor_min, valor_max):
@@ -131,35 +164,39 @@ def requerimiento2 (Catalog, min_energy, max_energy, min_danceability, max_dance
                 lt.addLast(val, v_dance)
                 mp.put(tracks,track_id, val)
 
-                track_count +=1
-        
-        i+=1
-        rta = random(tracks)
+def songSize(analyzer):
+    return lt.size(analyzer["canciones"])
 
-    return rta, track_count
+def indexHeight(analyzer):
+    return om.height(analyzer["values"])
 
-def random(table):
+def indexSize(analyzer):
+    return om.size(analyzer["values"])
 
-    n = mp.size(table)
-    numero = randint(0, n-1)
-    i= 0
-    rta = lt.newList()
-
-    while i < 5:
-
-        pareja = mp.get(table, numero[i])
-        lt.addLast(rta, pareja)
-        i+=1
-
-    return rta
 
 
 # Funciones utilizadas para comparar elementos dentro de una lista
 
+def instrumentalTempo(map,minIns,maxIns,minTemp:float,maxTemp:float):
+    lista=om.values(map,minIns,maxIns)
+    semi=lt.size(lista)
+    final_list=lt.newList("ARRAY_LIST")
+    for i in range(semi+1):
+        songlist=lt.getElement(lista,i)
+        for j in range(lt.size(songlist)+1):
+            song=lt.getElement(songlist,j)
+            if float(song["tempo"])>=minTemp and float(song["tempo"])<=maxTemp:
+                lt.addLast(final_list,song)
+    final=lt.size(final_list)
+    return (final_list,final)
+
+
 # Funciones de ordenamiento
 
 def compareIds(id1, id2):
-
+    """
+    Compara dos crimenes
+    """
     if (id1 == id2):
         return 0
     elif id1 > id2:
@@ -169,7 +206,9 @@ def compareIds(id1, id2):
 
 
 def compareElements(ele1, ele2):
-
+    """
+    Compara dos fechas
+    """
     if (ele1 == ele2):
         return 0
     elif (ele1 > ele2):
