@@ -39,16 +39,20 @@ los mismos.
 """
 
 # Construccion de modelos
-def newAnalyzer():
+def newCatalog():
 
-    analyzer = {'altura': None,
+    Catalog
+ = {'altura': None,
                 'elementos': None
                 }
 
-    analyzer['altura'] = lt.newList('SINGLE_LINKED', compareIds)
-    analyzer['elementos'] = om.newMap(omaptype='BST',
+    Catalog
+['altura'] = lt.newList('SINGLE_LINKED', compareIds)
+    Catalog
+['elementos'] = om.newMap(omaptype='BST',
                                       comparefunction=compareElements)
-    return analyzer
+    return Catalog
+
 
 # Funciones para agregar informacion al catalogo
 
